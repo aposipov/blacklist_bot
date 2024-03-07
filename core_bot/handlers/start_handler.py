@@ -1,29 +1,18 @@
-from aiogram import Router
-from aiogram.types import Message, InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup
+from aiogram import Router, F
+from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart
-from aiogram.utils.keyboard import InlineKeyboardMarkup
+from keyboards.register import kb_register, kb_cancel
+
+from utils.msg_to_admin import send_adm
+
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.context import FSMContext
 
 router = Router()
 
-contact_btn = KeyboardButton(
-    text='Отправить телефон',
-    request_contact=True
-)
-geo_btn = KeyboardButton(
-    text='Отправить геолокацию',
-    request_location=True
-)
 
-kb2 = ReplyKeyboardMarkup(keyboard=[[contact_btn], [geo_btn]])
-
-
-def get_kb():
-    buttons = [
-        [InlineKeyboardButton(text='first button', callback_data='1')],
-        [InlineKeyboardButton(text='second button', callback_data='2')]
-    ]
-    kb = InlineKeyboardMarkup(inline_keyboard=buttons)
-    return kb
+class Report(StatesGroup):
+    fill_report = State()
 
 
 @router.message(CommandStart())
@@ -32,5 +21,25 @@ async def cmd_start(message: Message) -> None:
     # add_to_db(message)
     await message.answer(text=
                          "Доброго времени суток!\n"
-                         "Если будут вопросы наберите /help", reply_markup=kb2)
+                         "Нажмите кнопку \"подать заявку\" для продолжения",
+                         reply_markup=kb_register)
 
+
+@router.callback_query(F.data == "register")
+async def register(callback: CallbackQuery, state: FSMContext):
+    await state.set_state(Report.fill_report)
+    await callback.message.answer("Напишите, как давно вы занимаетесь арендой?"
+                                  "\nС кем из арендодателей знакомы?"
+                                  "\nЕсли передумали можете ничего не отвечать"
+                                  " или нажать кнопку \"отменить заявку\"",
+                                  reply_markup=kb_cancel)
+
+
+@router.message(Report.fill_report)
+async def fsm_report(message: Message, state: FSMContext) -> None:
+    report = message.text
+    user = message.from_user.id
+    name = message.from_user.username
+    await send_adm(report, str(user), name)
+    await message.answer("Благодарим за ваше обращение!")
+    await state.clear()
