@@ -14,7 +14,7 @@ clear:
 		docker container rm blacklist_cont
 
 db_init:
-		python3.11 core_bot/db/init_db.py
+		python3 core_bot/db/init_db.py
 
 db_drop:
 		sqlite3 core_bot/data/dev_blacklist.db "DROP TABLE bl_users;"
@@ -26,7 +26,7 @@ db_drivers:
 		sqlite3 core_bot/data/dev_blacklist.db "SELECT * FROM bl_drivers;"
 
 start:
-		python3.11 core_bot/main.py
+		python3 core_bot/main.py
 
 test:
 		pytest -v
