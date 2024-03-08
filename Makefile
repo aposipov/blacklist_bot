@@ -12,6 +12,7 @@ run:	build
 clear:
 		docker stop blacklist_cont
 		docker container rm blacklist_cont
+		docker image rm blacklist_bot:latest
 
 db_init:
 		python3 core_bot/db/init_db.py

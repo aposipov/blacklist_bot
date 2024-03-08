@@ -3,6 +3,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command, StateFilter
 
 from keyboards.user_menu import kb_menu, kb_search
+from db.db_drivers import add_driver_db
 
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
@@ -51,6 +52,13 @@ async def fsm_id_driver(message: Message, state: FSMContext):
 	await message.answer(text=text['name'] + "\n" + text['bd_driver'] + "\n" + text['id_driver'],
 	                     reply_markup=kb_search)
 
+
+@router.callback_query(F.data == "apply")
+async def register(callback: CallbackQuery, state: FSMContext):
+	profile = state.get_data()
+	#check exist driver in db
+	add_driver_db(profile)
+	await callback.message.answer(text="Водитель добавлен!")
 
 # @router.callback_query(F.data == "add_blacklist")
 # async def register(callback: CallbackQuery):
