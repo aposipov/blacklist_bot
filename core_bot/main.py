@@ -3,7 +3,7 @@ import asyncio
 import sys
 from aiogram import Bot, Dispatcher
 from init_bot import BOT_TOKEN, set_default
-from handlers import start_handler, user_menu_handler, status_handler
+from handlers import start_handler, user_menu_handler, status_handler, adm_handlers
 
 bot = Bot(BOT_TOKEN)
 dp = Dispatcher()
@@ -13,6 +13,7 @@ async def main():
     logging.info("BOT IS STARTED!")
     dp.include_router(start_handler.router)
     dp.include_router(user_menu_handler.router)
+    dp.include_router(adm_handlers.router)
     dp.include_router(status_handler.router)
     await set_default(bot)
     await dp.start_polling(bot)

@@ -4,6 +4,10 @@ from init_bot import ADMIN_ID
 from keyboards.register import kb_accept
 
 
-async def send_adm(msg: str, username: str, user_id: str):
+async def send_adm(msg: str, userid: str, name: str):
 	text = msg
-	await bot.send_message(chat_id=ADMIN_ID, text="TEST text!\n" + text, reply_markup=kb_accept)
+	if name is None:
+		name = 'null'
+	await bot.send_message(chat_id=ADMIN_ID, text="text:\n" + text + "\n"
+	                       + "id: " + userid + "\n"
+	                       + "usename: " + name, reply_markup=kb_accept)
