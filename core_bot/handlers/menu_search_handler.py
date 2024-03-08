@@ -52,6 +52,6 @@ async def fsm_id_driver(message: Message, state: FSMContext):
 	                     reply_markup=kb_search)
 
 
-@router.callback_query(F.data == "add_blacklist")
-async def register(callback: CallbackQuery):
-	await callback.message.answer(text="You press ADD Blacklist")
+# @router.callback_query(F.data == "add_blacklist")
+# async def register(callback: CallbackQuery):
+# 	await callback.message.answer(text="You press ADD Blacklist")

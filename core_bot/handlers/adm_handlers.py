@@ -23,7 +23,7 @@ async def accept(callback: CallbackQuery, state: FSMContext):
 @router.message(Form.fill_user_id)
 async def fsm_user_id(message: Message, state: FSMContext):
 	accept_user(int(message.text))
-	await message.answer(message.text + "user add")
+	await message.answer(message.text + " is accept!")
 	await state.clear()
 
 
@@ -44,4 +44,4 @@ async def cmd_help(message: Message) -> None:
 async def cmd_help(message: Message, command: CommandObject) -> None:
 	userid = command.args
 	accept_user(int(userid))
-	await message.answer(text=userid + " accept user!")
+	await message.answer(text=userid + " is accept!")
