@@ -1,6 +1,6 @@
 import sqlite3
 
-db_path = '../data/dev_blacklist.db'
+db_path = 'core_bot/data/dev_blacklist.db'
 
 
 def init_db():
