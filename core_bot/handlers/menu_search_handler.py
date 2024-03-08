@@ -54,11 +54,12 @@ async def fsm_id_driver(message: Message, state: FSMContext):
 
 
 @router.callback_query(F.data == "apply")
-async def register(callback: CallbackQuery, state: FSMContext):
-	profile = state.get_data()
+async def apply(callback: CallbackQuery, state: FSMContext):
+	profile = await state.get_data()
 	#check exist driver in db
 	add_driver_db(profile)
 	await callback.message.answer(text="Водитель добавлен!")
+	await state.clear()
 
 # @router.callback_query(F.data == "add_blacklist")
 # async def register(callback: CallbackQuery):
