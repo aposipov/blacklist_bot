@@ -10,7 +10,7 @@ from aiogram.fsm.context import FSMContext
 router = Router()
 
 
-class Profile(StatesGroup):
+class ProfileBL(StatesGroup):
 	fill_fullname = State()
 	fill_bd = State()
 	fill_driver_id = State()
@@ -20,14 +20,14 @@ class Profile(StatesGroup):
 
 @router.callback_query(F.data == "add_blacklist")
 async def add_blacklist(callback: CallbackQuery, state: FSMContext):
-	await callback.message.answer(text="Введите полное ФИО водителя:")
-	await state.set_state(Profile.fill_fullname)
+	await callback.message.answer(text="BL Введите полное ФИО водителя:")
+	await state.set_state(ProfileBL.fill_fullname)
 
 
-@router.message(Profile.fill_fullname)
+@router.message(ProfileBL.fill_fullname)
 async def fsm_fullname(message: Message, state: FSMContext):
 	await state.update_data(fullname=message.text)
-	await message.answer(text="Введите дату рождения")
-	await state.set_state(Profile.fill_bd)
-
+	await message.answer(text="BL Введите дату рождения")
+	await state.set_state(ProfileBL.fill_bd)
+	await state.clear()
 
