@@ -54,7 +54,7 @@ async def cmd_accept(message: Message, command: CommandObject) -> None:
 	userid = command.args
 	accept_user(int(userid))
 	await message.answer(text=userid + " accepted!")
-	await bot.send_message(chat_id=int(message.text),
+	await bot.send_message(chat_id=int(userid),
 	                       text="Вы зарегестрированы!"
 	                    "Чтобы ознакомиться с возможностями нажмите /menu")
 
@@ -65,5 +65,5 @@ async def cmd_accept(message: Message, command: CommandObject) -> None:
 	userid = command.args
 	decline_user(int(userid))
 	await message.answer(text=userid + " rejected!")
-	await bot.send_message(chat_id=int(message.text),
+	await bot.send_message(chat_id=int(userid),
 	                       text="Ваша регистрация отменена!")
