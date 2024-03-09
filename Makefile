@@ -17,8 +17,9 @@ clear:
 db_init:
 		python3 core_bot/db/init_db.py
 
-db_drop:
+db_drop_all:
 		sqlite3 core_bot/data/dev_blacklist.db "DROP TABLE bl_users;"
+		sqlite3 core_bot/data/dev_blacklist.db "DROP TABLE bl_drivers;"
 
 db_users:
 		sqlite3 core_bot/data/dev_blacklist.db "SELECT * FROM bl_users;"

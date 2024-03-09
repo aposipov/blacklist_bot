@@ -4,6 +4,7 @@ from aiogram.filters import Command, StateFilter
 
 from keyboards.user_menu import kb_menu, kb_search
 from db.db_drivers import add_driver_db
+from utils.checking import checking_accept
 
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
@@ -18,12 +19,15 @@ class Profile(StatesGroup):
 
 
 @router.message(Command(commands='menu'))
-async def cmd_help(message: Message) -> None:
-	await message.answer(text="Выберите нужный пункт меню:", reply_markup=kb_menu)
+async def cmd_menu(message: Message) -> None:
+	if checking_accept(message.from_user.id):
+		await message.answer(text="Выберите нужный пункт меню:", reply_markup=kb_menu)
+	else:
+		await message.answer(text="Вы не прошли регистрацию нажмите /start")
 
 
 @router.callback_query(F.data == "search_driver")
-async def register(callback: CallbackQuery, state: FSMContext):
+async def search_driver(callback: CallbackQuery, state: FSMContext):
 	await callback.message.answer(text="Введите полное ФИО водителя:")
 	await state.set_state(Profile.fill_fullname)
 

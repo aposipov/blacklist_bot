@@ -5,7 +5,7 @@ from aiogram.filters import Command, CommandObject
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 
-from db.db_adm import accept_user
+from db.db_adm import accept_user, decline_user
 
 router = Router()
 
@@ -22,26 +22,48 @@ async def accept(callback: CallbackQuery, state: FSMContext):
 
 @router.message(Form.fill_user_id)
 async def fsm_user_id(message: Message, state: FSMContext):
+	from main import bot
 	accept_user(int(message.text))
 	await message.answer(message.text + " is accept!")
+	await bot.send_message(chat_id=int(message.text), text="Вы зарегестрированы!"
+	                        "Чтобы ознакомиться с возможностями нажмите /menu")
 	await state.clear()
 
 
 @router.message(Command(commands='adm'))
-async def cmd_help(message: Message) -> None:
+async def cmd_adm(message: Message) -> None:
+	#check ADMIN ID
 	await message.answer(text="/adm - show all cmds\n"
+	                          "/msg - msg for user\n"
+	                          "/shout - msg for all\n"
 	                          "/getid - show user_id and chat_id\n"
-	                          "/accept - accept User\n")
+	                          "/get_phone - get user phone number\n"
+	                          "/accept - accept User\n"
+	                          "/decline - no add\n")
 
 
 @router.message(Command(commands='getid'))
-async def cmd_help(message: Message) -> None:
+async def cmd_getid(message: Message) -> None:
 	await message.answer(text="ID: " + str(message.from_user.id) + "\n"
 	                        "CHAT ID: " + str(message.chat.id) + "\n")
 
 
 @router.message(Command(commands='accept'))
-async def cmd_help(message: Message, command: CommandObject) -> None:
+async def cmd_accept(message: Message, command: CommandObject) -> None:
+	from main import bot
 	userid = command.args
 	accept_user(int(userid))
-	await message.answer(text=userid + " is accept!")
+	await message.answer(text=userid + " accepted!")
+	await bot.send_message(chat_id=int(message.text),
+	                       text="Вы зарегестрированы!"
+	                    "Чтобы ознакомиться с возможностями нажмите /menu")
+
+
+@router.message(Command(commands='decline'))
+async def cmd_accept(message: Message, command: CommandObject) -> None:
+	from main import bot
+	userid = command.args
+	decline_user(int(userid))
+	await message.answer(text=userid + " rejected!")
+	await bot.send_message(chat_id=int(message.text),
+	                       text="Ваша регистрация отменена!")
