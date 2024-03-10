@@ -1,27 +1,28 @@
 import csv
 import sqlite3
 
-path_to_file = '../data/all.csv'
-db_path = '../data/dev_g4f.db'
+path_to_file = 'core_bot/data/mock_data.csv'
+db_path = 'core_bot/data/dev_blacklist.db'
 
 
 def db_add(row):
-	user_id: int = row[0]
-	username: str = row[1]
-	full_name: str = row[2]
-	phone: str = 'null'
-	lang: str = row[3]
-	premium: bool = False
-	date = row[4]
-	# print(user_id, username, full_name, lang, date)
+	tg_id: int = row[0]
+	driver_id: int = row[1]
+	bl: int = row[2]
+	track: int = row[3]
+	full_name: str = row[4]
+	bd: str = row[5]
+	comment: str = row[6]
 	try:
 		db = sqlite3.connect(db_path)
 		c = db.cursor()
-		c.execute("INSERT INTO g4fusers VALUES (NULL,?,?,?,?,?,NULL,?)",
-		          (user_id, username, full_name, phone, lang, date))
+		c.execute("INSERT INTO bl_drivers "
+		          "(landlord_id, driver_id, blacklist, tracking, fullname, birthday, comment)"
+		          "VALUES (?,?,?,?,?,?,?)",
+		          (tg_id, driver_id, bl, track, full_name, bd, comment))
 		db.commit()
 		db.close()
-		print(f'User {user_id} added to DB!')
+		print(f'Driver {full_name} added to DB!')
 	except sqlite3.Error as e:
 		print(f'add_data ERROR! {e}')
 
@@ -40,4 +41,4 @@ def read_file():
 
 
 read_file()
-print("upload OK!")
+print(" Driver upload OK!")
