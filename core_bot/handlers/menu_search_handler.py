@@ -57,19 +57,37 @@ async def fsm_id_driver(message: Message, state: FSMContext):
 	                     reply_markup=kb_search)
 
 
+@router.callback_query(F.data == "edit_fname")
+async def edit_fname(callback: CallbackQuery, state: FSMContext):
+	await callback.message.answer(text="Введите полное ФИО водителя:")
+	await state.set_state(Profile.fill_fullname)
+
+
+@router.callback_query(F.data == "edit_bd")
+async def edit_bd(callback: CallbackQuery, state: FSMContext):
+	await callback.message.answer(text="Введите дату рождения:")
+	await state.set_state(Profile.fill_bd)
+
+
+@router.callback_query(F.data == "edit_id")
+async def edit_driver_id(callback: CallbackQuery, state: FSMContext):
+	await callback.message.answer(text="Введите номер ВУ:")
+	await state.set_state(Profile.fill_id_driver)
+
+
 @router.callback_query(F.data == "apply")
 async def apply(callback: CallbackQuery, state: FSMContext):
 	profile = await state.get_data()
 	tg_id = callback.from_user.id
-	#check exist driver in db
 	add_driver_db(profile, tg_id)
 	result = search_driver_db(profile)
 	if result:
 		for line in result:
 			await callback.message.answer(text=line[0] + " " + line[3]
 			                    + " " + line[4] + " " + line[5] + "\n")
+		await state.clear()
 	else:
-		await callback.message.answer(text="Водитель не найден в черном списке!")
+		await callback.message.answer(text="В черном списке водитель не найден!")
 	await state.clear()
 
 # @router.callback_query(F.data == "add_blacklist")
