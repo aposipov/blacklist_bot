@@ -3,7 +3,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command, StateFilter
 
 from keyboards.user_menu import kb_menu, kb_search
-from db.db_drivers import add_driver_db
+from db.db_drivers import add_driver_db, search_driver_db
 from utils.checking import checking_accept
 
 from aiogram.fsm.state import State, StatesGroup
@@ -18,12 +18,12 @@ class Profile(StatesGroup):
 	fill_id_driver = State()
 
 
-@router.message(Command(commands='menu'))
-async def cmd_menu(message: Message) -> None:
-	if checking_accept(message.from_user.id):
-		await message.answer(text="Выберите нужный пункт меню:", reply_markup=kb_menu)
-	else:
-		await message.answer(text="Вы не прошли регистрацию нажмите /start")
+# @router.message(Command(commands='menu'))
+# async def cmd_menu(message: Message) -> None:
+# 	if checking_accept(message.from_user.id):
+# 		await message.answer(text="Выберите нужный пункт меню:", reply_markup=kb_menu)
+# 	else:
+# 		await message.answer(text="Вы не прошли регистрацию нажмите /start")
 
 
 @router.callback_query(F.data == "search_driver")
@@ -63,7 +63,13 @@ async def apply(callback: CallbackQuery, state: FSMContext):
 	tg_id = callback.from_user.id
 	#check exist driver in db
 	add_driver_db(profile, tg_id)
-	await callback.message.answer(text="Водитель добавлен!")
+	result = search_driver_db(profile)
+	if result:
+		for line in result:
+			await callback.message.answer(text=line[0] + " " + line[3]
+			                    + " " + line[4] + " " + line[5] + "\n")
+	else:
+		await callback.message.answer(text="Водитель не найден в черном списке!")
 	await state.clear()
 
 # @router.callback_query(F.data == "add_blacklist")

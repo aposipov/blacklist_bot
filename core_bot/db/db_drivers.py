@@ -5,7 +5,7 @@ from aiogram.types import Message
 db_path = 'data/dev_blacklist.db'
 
 
-def add_driver_db(profile, tg_id):
+def add_driver_db(profile: dict, tg_id: int):
 	try:
 		db = sqlite3.connect(db_path)
 		c = db.cursor()
@@ -21,5 +21,21 @@ def add_driver_db(profile, tg_id):
 			db.close()
 
 
-def search_driver():
-	pass
+def search_driver_db(profile: dict):
+	try:
+		db = sqlite3.connect(db_path)
+		c = db.cursor()
+		c.execute(
+			"SELECT driver_id, blacklist, tracking, fullname, birthday, comment "
+			"FROM bl_drivers "
+			"WHERE blacklist = ? AND fullname = ? AND birthday = ? "
+			"OR blacklist = ? AND driver_id = ?",
+			(1, profile['name'], profile['bd_driver'], 1, profile['id_driver'],))
+		result = c.fetchall()
+		if result:
+			return result
+	except sqlite3.Error as e:
+		print(f'search_driver_db ERROR! {e}')
+	finally:
+		if db:
+			db.close()
