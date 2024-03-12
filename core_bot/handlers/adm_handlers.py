@@ -10,22 +10,22 @@ from db.db_adm import accept_user, decline_user
 router = Router()
 
 
-class Form(StatesGroup):
+class FormAdm(StatesGroup):
 	fill_user_id = State()
 
 
 @router.callback_query(F.data == "accept_user")
 async def accept(callback: CallbackQuery, state: FSMContext):
 	await callback.message.answer("input user_id!")
-	await state.set_state(Form.fill_user_id)
+	await state.set_state(FormAdm.fill_user_id)
 
 
-@router.message(Form.fill_user_id)
+@router.message(FormAdm.fill_user_id)
 async def fsm_user_id(message: Message, state: FSMContext):
 	from main import bot
 	accept_user(int(message.text))
 	await message.answer(message.text + " is accept!")
-	await bot.send_message(chat_id=int(message.text), text="Вы зарегестрированы!"
+	await bot.send_message(chat_id=int(message.text), text="Ваша регситрация одобрена! "
 	                        "Чтобы ознакомиться с возможностями нажмите /menu")
 	await state.clear()
 
@@ -55,7 +55,7 @@ async def cmd_accept(message: Message, command: CommandObject) -> None:
 	accept_user(int(userid))
 	await message.answer(text=userid + " accepted!")
 	await bot.send_message(chat_id=int(userid),
-	                       text="Вы зарегестрированы!"
+	                       text="Ваша регситрация одобрена! "
 	                    "Чтобы ознакомиться с возможностями нажмите /menu")
 
 

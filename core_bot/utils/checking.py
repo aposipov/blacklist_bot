@@ -14,7 +14,7 @@ def checking_accept(user_id: int):
 		else:
 			return False
 	except sqlite3.Error as e:
-		print(f'add_phone ERROR! {e}')
+		print(f'checking_accept ERROR! {e}')
 	finally:
 		if db:
 			db.close()

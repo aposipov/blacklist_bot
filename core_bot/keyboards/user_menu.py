@@ -1,10 +1,11 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+inv_code = InlineKeyboardButton(text="код для приглашения", callback_data="icode")
 search = InlineKeyboardButton(text="поиск водителя", callback_data="search_driver")
 add = InlineKeyboardButton(text="добавить в черный список", callback_data="add_blacklist")
 tracking = InlineKeyboardButton(text="❌ отслеживать", callback_data="tracking")
 
-kb_menu = InlineKeyboardMarkup(inline_keyboard=[[search], [add], [tracking]])
+kb_menu = InlineKeyboardMarkup(inline_keyboard=[[inv_code], [search], [add], [tracking]])
 
 apply = InlineKeyboardButton(text="✅ данные верны", callback_data="apply")
 edit_fullname = InlineKeyboardButton(text="❌ изменить ФИО", callback_data="edit_fname")
