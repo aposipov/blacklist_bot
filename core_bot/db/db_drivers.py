@@ -39,3 +39,21 @@ def search_driver_db(profile: dict):
 	finally:
 		if db:
 			db.close()
+
+
+def add_driver_bl(profile: dict, tg_id: int):
+	try:
+		db = sqlite3.connect(db_path)
+		c = db.cursor()
+		c.execute(
+			"INSERT INTO bl_drivers (landlord_id, driver_id, "
+			"fullname, birthday, comment, blacklist) "
+			"VALUES (?,?,?,?,?,?)",
+			(tg_id, profile['driverid'], profile['fullname'], profile['bd'],
+			 profile['comment'], 1,))
+		db.commit()
+	except sqlite3.Error as e:
+		print(f'add_driver_bl ERROR! {e}')
+	finally:
+		if db:
+			db.close()

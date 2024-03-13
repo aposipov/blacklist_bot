@@ -14,3 +14,7 @@ edit_id = InlineKeyboardButton(text="✏️ изменить Номер ВУ", c
 
 kb_search = InlineKeyboardMarkup(inline_keyboard=[[apply], [edit_fullname],
                                                   [edit_bd], [edit_id]])
+
+apply_bl = InlineKeyboardButton(text="✅ данные верны", callback_data="apply_bl")
+
+kb_blacklist = InlineKeyboardMarkup(inline_keyboard=[[apply_bl]])

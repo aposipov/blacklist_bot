@@ -83,8 +83,11 @@ async def apply(callback: CallbackQuery, state: FSMContext):
 	result = search_driver_db(profile)
 	if result:
 		for line in result:
-			await callback.message.answer(text=line[0] + " " + line[3]
-			                    + " " + line[4] + " " + line[5] + "\n")
+			await callback.message.answer(text="В черном списке:\n"
+			                    + line[0]
+			                    + " " + line[3]
+			                    + " " + line[4]
+			                    + " " + line[5] + "\n")
 		await state.clear()
 	else:
 		await callback.message.answer(text="В черном списке водитель не найден!")
