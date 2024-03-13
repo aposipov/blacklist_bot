@@ -39,7 +39,8 @@ def init_db():
 		          "phone VARCHAR(12),"
 		          "img_driver_id VARCHAR(250),"
 		          "img_other VARCHAR(250),"
-		          "date TIMESTAMP)")
+		          "date TIMESTAMP,"
+		          "UNIQUE (landlord_id, driver_id))")
 	except Exception as e:
 		print(f'INIT DB ERROR! {e}')
 	db.commit()
