@@ -30,3 +30,12 @@ async def send_from_support(msg: Message):
 	                       + "uname: " + uname + "\n"
 	                       + "***\n"
 	                       + msg.text)
+
+
+async def file_was_sent(msg: Message):
+	from main import bot
+	filename = msg.document.file_name
+	userid = str(msg.from_user.id)
+	await bot.send_message(chat_id=ADMIN_ID,
+	                       text="ID: " + userid + "\n"
+	                            + "File (" + filename + ") was sent!")

@@ -8,7 +8,7 @@ from db.db_users import get_icode
 from keyboards.user_menu import kb_menu
 from keyboards.kb_register import kb_reg_start
 from utils.checking import checking_accept
-from utils.msg_to_admin import send_from_support
+from utils.msg_to_admin import send_from_support, file_was_sent
 
 router = Router()
 
@@ -56,9 +56,14 @@ async def cmd_status(message: Message) -> None:
 
 @router.message(F.document)
 async def cmd_doc(message: Message) -> None:
+	from main import bot
 	# send adm msg about file
-	# hadle get file
-	await message.answer(text="Ваш файл получен!")
+	document = message.document
+	ext = document.file_name.split(sep='.')
+	path_to_data = f"data/files/{str(message.from_user.id)}.{ext[1]}"
+	await bot.download(document, path_to_data)
+	await message.answer(text=f"Ваш файл {document.file_name} получен!")
+	await file_was_sent(message)
 
 
 @router.callback_query(F.data == "icode")
