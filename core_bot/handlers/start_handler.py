@@ -97,7 +97,7 @@ async def reg_no_code(callback: CallbackQuery, state: FSMContext):
     userid = callback.from_user.id
     storage = await state.get_data()
     await send_adm(storage['about'], str(userid), uname, fullname, 'no code')
-    await callback.message.answer(f"{callback.message.from_user.first_name}, спасибо! "
+    await callback.message.answer(f"{callback.from_user.first_name}, спасибо! "
                                   "Рассмотрение заявки займет до 3х суток!")
     await state.clear()
 

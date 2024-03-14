@@ -88,3 +88,18 @@ def get_icode(userid: int) -> str:
     finally:
         if db:
             db.close()
+
+
+def get_uids() -> list:
+    db = None
+    try:
+        db = sqlite3.connect(db_path)
+        c = db.cursor()
+        c.execute("SELECT tg_id FROM bl_users")
+        u_ids = c.fetchall()
+        return u_ids
+    except sqlite3.Error as e:
+        print(f'get_uid ERROR! {e}')
+    finally:
+        if db:
+            db.close()

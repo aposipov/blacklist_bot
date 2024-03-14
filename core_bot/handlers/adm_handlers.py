@@ -5,7 +5,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 
 from db.db_adm import accept_user, decline_user
-from utils.msgs import msg
+from utils.msgs import msg, shout
 
 router = Router()
 
@@ -16,6 +16,7 @@ class FormAdm(StatesGroup):
 
 class UserMsg(StatesGroup):
 	fill_msg = State()
+	fill_forall = State()
 
 
 @router.callback_query(F.data == "accept_user")
@@ -66,6 +67,20 @@ async def fsm_msg(message: Message, state: FSMContext):
 	data = await state.get_data()
 	userid = data.get('userid')
 	await msg(userid, text)
+	await message.answer("✅ msg was sended!")
+	await state.clear()
+
+
+@router.message(Command(commands='shout'))
+async def cmd_shout(message: Message, state: FSMContext) -> None:
+	# check adm
+	await message.answer(text="Input text ...")
+	await state.set_state(UserMsg.fill_forall)
+
+
+@router.message(UserMsg.fill_forall)
+async def fsm_shout(message: Message, state: FSMContext):
+	await shout(message.text)
 	await message.answer("✅ msg was sended!")
 	await state.clear()
 
