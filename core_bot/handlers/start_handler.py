@@ -92,9 +92,9 @@ async def fsm_code(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(F.data == "no_code")
 async def reg_no_code(callback: CallbackQuery, state: FSMContext):
-    uname = callback.message.from_user.username
-    fullname = callback.message.from_user.full_name
-    userid = callback.message.from_user.id
+    uname = callback.from_user.username
+    fullname = callback.from_user.full_name
+    userid = callback.from_user.id
     storage = await state.get_data()
     await send_adm(storage['about'], str(userid), uname, fullname, 'no code')
     await callback.message.answer(f"{callback.message.from_user.first_name}, спасибо! "

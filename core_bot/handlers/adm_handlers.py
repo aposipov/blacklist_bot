@@ -1,17 +1,21 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command, CommandObject
-
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 
 from db.db_adm import accept_user, decline_user
+from utils.msgs import msg
 
 router = Router()
 
 
 class FormAdm(StatesGroup):
 	fill_user_id = State()
+
+
+class UserMsg(StatesGroup):
+	fill_msg = State()
 
 
 @router.callback_query(F.data == "accept_user")
@@ -46,6 +50,24 @@ async def cmd_adm(message: Message) -> None:
 async def cmd_getid(message: Message) -> None:
 	await message.answer(text="ID: " + str(message.from_user.id) + "\n"
 	                        "CHAT ID: " + str(message.chat.id) + "\n")
+
+
+@router.message(Command(commands='msg'))
+async def cmd_msg(message: Message, command: CommandObject, state: FSMContext) -> None:
+	# check adm
+	await state.update_data(userid=command.args)
+	await message.answer(text="Input text ...")
+	await state.set_state(UserMsg.fill_msg)
+
+
+@router.message(UserMsg.fill_msg)
+async def fsm_msg(message: Message, state: FSMContext):
+	text = message.text
+	data = await state.get_data()
+	userid = data.get('userid')
+	await msg(userid, text)
+	await message.answer("✅ msg was sended!")
+	await state.clear()
 
 
 @router.message(Command(commands='accept'))
