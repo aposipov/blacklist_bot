@@ -1,6 +1,6 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
-from aiogram.filters import Command, CommandObject
+from aiogram.filters import Command, CommandObject, StateFilter
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 
@@ -54,7 +54,7 @@ async def cmd_status(message: Message) -> None:
 	await message.answer(text="Бот доступен для запросов!")
 
 
-@router.message(F.document)
+@router.message(F.document, StateFilter(None))
 async def cmd_doc(message: Message) -> None:
 	from main import bot
 	# send adm msg about file
