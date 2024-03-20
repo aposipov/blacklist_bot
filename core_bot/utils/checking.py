@@ -28,7 +28,7 @@ def checking_invitation(user_id: int):
 		c.execute("SELECT invitation_from FROM bl_users WHERE tg_id = ?", (user_id,))
 		result = c.fetchone()
 		if result:
-			return result[0]
+			return result[0] == 'X'
 		else:
 			return False
 	except sqlite3.Error as e:

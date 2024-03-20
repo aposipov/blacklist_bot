@@ -77,11 +77,11 @@ async def fsm_report(message: Message, state: FSMContext) -> None:
 async def reg_invite(callback: CallbackQuery, state: FSMContext):
     #check invitation exist
     if checking_invitation(callback.from_user.id):
-        await callback.message.answer("У вас уже есть код. "
-                                      "Больше его добавлять не нужно!")
-    else:
         await callback.message.answer("Введите \"код приглашения\"!")
         await state.set_state(FormStart.fill_code)
+    else:
+        await callback.message.answer("У вас уже есть код. "
+                                      "Больше его добавлять не нужно!")
 
 
 @router.message(FormStart.fill_code)
@@ -101,19 +101,22 @@ async def fsm_code(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(F.data == "no_code")
 async def reg_no_code(callback: CallbackQuery, state: FSMContext):
-    #check invitation exist
+    # check invitation exist
     if checking_invitation(callback.from_user.id):
-        await callback.message.answer("У вас уже есть код. "
-                                      "Больше его добавлять не нужно!")
-    else:
         uname = callback.from_user.username
         fullname = callback.from_user.full_name
         userid = callback.from_user.id
+        add_icode('nocode', userid)
         storage = await state.get_data()
-        await send_adm(storage['about'], str(userid), uname, fullname, 'no code')
-        await callback.message.answer(f"{callback.from_user.first_name}, спасибо! "
-                                  "Рассмотрение заявки займет до 3х суток!")
+        await send_adm(storage['about'], str(userid), uname, fullname,
+                       'no code')
+        await callback.message.answer(
+            f"{callback.from_user.first_name}, спасибо! "
+            "Рассмотрение заявки займет до 3х суток!")
         await state.clear()
+    else:
+        await callback.message.answer("У вас уже есть код. "
+                                      "Больше его добавлять не нужно!")
 
 
 @router.callback_query(F.data == "cancel")
