@@ -1,7 +1,9 @@
 import sqlite3
 from aiogram.types import Message
 
-db_path = 'data/dev_blacklist.db'
+from init_bot import DB_PATH
+
+db_path = DB_PATH
 
 # id|tg_id|username|fullname|phone|accept|city|about|lang|premium|date
 

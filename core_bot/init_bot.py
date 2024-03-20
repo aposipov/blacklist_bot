@@ -6,6 +6,7 @@ env = Env()
 env.read_env()
 BOT_TOKEN = env.str('TOKEN')
 ADMIN_ID = env.str("ADMIN_ID")
+DB_PATH = 'data/dev_blacklist.db'
 
 # bot.set_my_description
 greeting = "С помощью этого бота вы можете вести базу данных\n" \

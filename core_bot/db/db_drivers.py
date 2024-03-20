@@ -1,8 +1,9 @@
 import sqlite3
+from init_bot import DB_PATH
 from aiogram.types import Message
 
 # id|driver_id|fullname|birthday|comment|rating|passport|phone|img_path|date
-db_path = 'data/dev_blacklist.db'
+db_path = DB_PATH
 
 
 def add_driver_db(profile: dict, tg_id: int):

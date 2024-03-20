@@ -1,7 +1,8 @@
 import sqlite3
+from init_bot import DB_PATH
 # from aiogram.types import Message
 
-db_path = 'data/dev_blacklist.db'
+db_path = DB_PATH
 
 
 def accept_user(user: int):
