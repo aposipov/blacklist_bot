@@ -1,13 +1,13 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart
-from keyboards.kb_register import kb_reg_start, kb_cancel_start, kb_invite
-
-from utils.msg_to_admin import send_adm
-from db.db_users import add_user_db, add_phone, add_about_user, add_icode
-
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
+
+from keyboards.kb_register import kb_reg_start, kb_cancel_start, kb_invite
+from utils.msg_to_admin import send_adm
+from db.db_users import add_user_db, add_phone, add_about_user, add_icode
+from utils.checking import checking_invitation
 
 router = Router()
 
@@ -31,15 +31,19 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
 async def fsm_phone(message: Message, state: FSMContext):
     phone = message.text
     userid = message.from_user.id
-    # await state.update_data(phone=phone)
-    #check empty and valid
-    add_phone(phone, userid)
-    await message.answer(text=
+    if len(phone) == 11 and phone.isdigit():
+        add_phone(phone, userid)
+        await message.answer(text=
                              "Чтобы использовать возможности Бота "
                              "пройдите процесс регистрации! \n"
                              "Нажмите кнопку \"зарегестрироваться\"",
                              reply_markup=kb_reg_start)
-    await state.set_state(FormStart.fill_trash)
+        await state.set_state(FormStart.fill_trash)
+    else:
+        await message.answer(text="Вы не верно ввели свой номер телефона он "
+                                  "должен состоять только из 11 цифр! "
+                                  "Введите еще раз!")
+        await state.set_state(FormStart.fill_phone)
 
 
 @router.callback_query(F.data == "reg_start")
@@ -71,8 +75,13 @@ async def fsm_report(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(F.data == "invite_code")
 async def reg_invite(callback: CallbackQuery, state: FSMContext):
-    await callback.message.answer("Введите \"код приглашения\"!")
-    await state.set_state(FormStart.fill_code)
+    #check invitation exist
+    if checking_invitation(callback.from_user.id):
+        await callback.message.answer("У вас уже есть код. "
+                                      "Больше его добавлять не нужно!")
+    else:
+        await callback.message.answer("Введите \"код приглашения\"!")
+        await state.set_state(FormStart.fill_code)
 
 
 @router.message(FormStart.fill_code)
@@ -92,14 +101,19 @@ async def fsm_code(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(F.data == "no_code")
 async def reg_no_code(callback: CallbackQuery, state: FSMContext):
-    uname = callback.from_user.username
-    fullname = callback.from_user.full_name
-    userid = callback.from_user.id
-    storage = await state.get_data()
-    await send_adm(storage['about'], str(userid), uname, fullname, 'no code')
-    await callback.message.answer(f"{callback.from_user.first_name}, спасибо! "
+    #check invitation exist
+    if checking_invitation(callback.from_user.id):
+        await callback.message.answer("У вас уже есть код. "
+                                      "Больше его добавлять не нужно!")
+    else:
+        uname = callback.from_user.username
+        fullname = callback.from_user.full_name
+        userid = callback.from_user.id
+        storage = await state.get_data()
+        await send_adm(storage['about'], str(userid), uname, fullname, 'no code')
+        await callback.message.answer(f"{callback.from_user.first_name}, спасибо! "
                                   "Рассмотрение заявки займет до 3х суток!")
-    await state.clear()
+        await state.clear()
 
 
 @router.callback_query(F.data == "cancel")
