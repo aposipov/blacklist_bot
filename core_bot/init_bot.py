@@ -4,8 +4,12 @@ from aiogram.types import BotCommand
 
 env = Env()
 env.read_env()
-BOT_TOKEN = env.str('TOKEN')
+BOT_TOKEN = env.str("TOKEN")
 ADMIN_ID = env.str("ADMIN_ID")
+GROUP_ID = env.str("GROUP_ID")
+TH_SUPPORT = env.str("TH_SUPPORT")
+TH_REGISTRATION = env.str("TH_REGISTRATION")
+TH_UPLOAD = env.str("TH_UPLOAD")
 DB_PATH = 'data/dev_blacklist.db'
 
 # bot.set_my_description

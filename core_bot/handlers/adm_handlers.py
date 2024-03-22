@@ -50,7 +50,8 @@ async def cmd_adm(message: Message) -> None:
 @router.message(Command(commands='getid'))
 async def cmd_getid(message: Message) -> None:
 	await message.answer(text="ID: " + str(message.from_user.id) + "\n"
-	                        "CHAT ID: " + str(message.chat.id) + "\n")
+	                        "CHAT ID: " + str(message.chat.id) + "\n"
+	                        "THREAD_ID: " + str(message.message_thread_id))
 
 
 @router.message(Command(commands='msg'))
